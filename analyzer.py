@@ -1957,7 +1957,7 @@ def _layer23_trade_plan(self, layers: Dict, symbol: str, current_price: float) -
         }
 
     # ==================== LAYER 24: AI SUMMARY ====================
-    def _layer24_ai_summary(self, layers: Dict, symbol: str, timeframe: str) -> Dict[str, Any]:
+def _layer24_ai_summary(self, layers: Dict, symbol: str, timeframe: str) -> Dict[str, Any]:
         direction = layers.get("confluence", {}).get("direction", "NEUTRAL")
         confluence = layers.get("confluence", {}).get("confluence_score", 0)
         confidence = layers.get("confidence", {}).get("confidence", 0)
