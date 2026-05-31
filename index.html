@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMT Crypto Trading Analysis Platform</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">
+                <h1>🔬 RMT Crypto Analysis</h1>
+                <p>Random Matrix Theory Powered Trading Intelligence</p>
+            </div>
+            <div class="status">
+                <span id="connection-status" class="status-dot online"></span>
+                <span id="status-text">Connected</span>
+            </div>
+        </header>
+
+        <!-- DISCLAIMER BANNER -->
+        <div class="disclaimer-banner" id="disclaimer-banner">
+            <strong>⚠️ DISCLAIMER:</strong> <span id="disclaimer-text">Loading...</span>
+            <button onclick="toggleDisclaimer()" class="btn-small">Show/Hide</button>
+        </div>
+
+        <!-- CRITERIA PANEL -->
+        <div class="criteria-panel" id="criteria-panel">
+            <h3>📋 Minimum Criteria for Trade Consideration</h3>
+            <div class="criteria-grid" id="criteria-grid"></div>
+        </div>
+
+        <!-- CONTROL PANEL -->
+        <div class="control-panel">
+            <div class="control-group">
+                <label>Symbol</label>
+                <select id="symbol-select">
+                    <option value="BTCUSDT">BTCUSDT</option>
+                    <option value="ETHUSDT">ETHUSDT</option>
+                    <option value="SOLUSDT">SOLUSDT</option>
+                    <option value="BNBUSDT">BNBUSDT</option>
+                    <option value="XRPUSDT">XRPUSDT</option>
+                    <option value="ADAUSDT">ADAUSDT</option>
+                    <option value="DOGEUSDT">DOGEUSDT</option>
+                    <option value="LINKUSDT">LINKUSDT</option>
+                    <option value="AVAXUSDT">AVAXUSDT</option>
+                    <option value="MATICUSDT">MATICUSDT</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Timeframe</label>
+                <select id="timeframe-select">
+                    <option value="5m">5M</option>
+                    <option value="15m">15M</option>
+                    <option value="30m">30M</option>
+                    <option value="1h" selected>1H</option>
+                    <option value="2h">2H</option>
+                    <option value="4h">4H</option>
+                    <option value="1d">1D</option>
+                </select>
+            </div>
+            <button id="run-analysis-btn" class="btn-primary" onclick="runAnalysis()">
+                ▶️ Run Analysis
+            </button>
+            <button id="backtest-btn" class="btn-secondary" onclick="runBacktest()">
+                📊 Backtest
+            </button>
+            <button id="scanner-btn" class="btn-secondary" onclick="runScanner()">
+                🔍 Scan Watchlist
+            </button>
+        </div>
+
+        <!-- WATCHLIST -->
+        <div class="watchlist-section">
+            <h3>👁️ Watchlist</h3>
+            <div class="watchlist-tags" id="watchlist-tags"></div>
+            <div class="watchlist-add">
+                <input type="text" id="new-symbol" placeholder="Add symbol (e.g. BTCUSDT)" maxlength="12">
+                <button onclick="addToWatchlist()" class="btn-small">+ Add</button>
+            </div>
+        </div>
+
+        <!-- LOADING -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Running 24-layer analysis...</p>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+
+        <!-- MAIN RESULTS -->
+        <div id="results" class="results hidden">
+            <!-- TOP SUMMARY CARDS -->
+            <div class="summary-cards">
+                <div class="card direction-card" id="direction-card">
+                    <div class="card-label">Direction</div>
+                    <div class="card-value" id="direction-value">-</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Confluence</div>
+                    <div class="card-value" id="confluence-value">-</div>
+                    <div class="card-sub" id="confluence-bar"></div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Confidence</div>
+                    <div class="card-value" id="confidence-value">-</div>
+                    <div class="gauge-container">
+                        <div class="gauge" id="confidence-gauge"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Setup Quality</div>
+                    <div class="card-value" id="quality-value">-</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Price</div>
+                    <div class="card-value" id="price-value">-</div>
+                    <div class="card-sub" id="price-change">-</div>
+                </div>
+            </div>
+
+            <!-- AI SUMMARY -->
+            <div class="section ai-summary">
+                <h3>🤖 AI Summary</h3>
+                <div class="ai-box" id="ai-summary-text"></div>
+            </div>
+
+            <!-- TRADE PLAN -->
+            <div class="section trade-plan" id="trade-plan-section">
+                <h3>📋 Trade Plan</h3>
+                <div class="trade-plan-grid" id="trade-plan-grid"></div>
+            </div>
+
+            <!-- LAYERS GRID -->
+            <div class="section">
+                <h3>🔍 Analysis Layers (24)</h3>
+                <div class="layers-grid" id="layers-grid"></div>
+            </div>
+
+            <!-- PRICE CHART -->
+            <div class="section">
+                <h3>📈 Price Chart</h3>
+                <div id="chart-container" style="height:400px;background:var(--bg-card);border-radius:8px;"></div>
+            </div>
+
+            <!-- LIQUIDITY HEATMAP (rendered on chart + bar view) -->
+            <div class="section">
+                <h3>🌡️ Liquidity Heatmap</h3>
+                <div class="chart-heatmap-wrapper" style="position:relative;height:400px;margin-bottom:16px;">
+                    <div id="chart-heatmap-container" style="height:100%;background:var(--bg-card);border-radius:8px;"></div>
+                    <div id="heatmap-overlay" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                </div>
+                <div class="heatmap-container" id="heatmap-container"></div>
+            </div>
+
+            <!-- MARKET STRUCTURE VISUAL -->
+            <div class="section">
+                <h3>📐 Market Structure</h3>
+                <div class="structure-visual" id="structure-visual"></div>
+            </div>
+
+            <!-- BACKTEST RESULTS -->
+            <div class="section hidden" id="backtest-section">
+                <h3>📊 Backtest Results</h3>
+                <div class="backtest-grid" id="backtest-grid"></div>
+                <div class="trades-table" id="trades-table"></div>
+            </div>
+
+            <!-- SCANNER RESULTS -->
+            <div class="section hidden" id="scanner-section">
+                <h3>🔍 Watchlist Scanner</h3>
+                <div class="scanner-table" id="scanner-table"></div>
+            </div>
+
+            <!-- HISTORY -->
+            <div class="section">
+                <h3>📝 Analysis History</h3>
+                <div class="history-table" id="history-table"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

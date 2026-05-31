@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: rmt-trading-platform
+    runtime: docker
+    plan: free
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    healthCheckPath: /health
