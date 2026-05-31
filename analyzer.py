@@ -1789,15 +1789,15 @@ class RMTAnalyzer:
         }
 
     # ==================== LAYER 22: BACKTESTING ENGINE ====================
-        async def backtest(self, candles: List[Dict], symbol: str, timeframe: str) -> Dict[str, Any]:
-        if len(candles) < 50:
+        async def backtest(self, candles: List[Dict], symbol: str, timeframe: str) -> Dict[str, Any]: 
+            if len(candles) < 50:
             return {"error": "Insufficient data"}
 
-        trades = []
-        position = None
-        entry_price = 0
-        stop_loss = 0
-        take_profit = 0
+            trades = []
+            position = None
+            entry_price = 0
+            stop_loss = 0
+            take_profit = 0
 
         for i in range(50, len(candles) - 1):
             window = candles[:i+1]
