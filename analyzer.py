@@ -2013,7 +2013,7 @@ def _layer24_ai_summary(self, layers: Dict, symbol: str, timeframe: str) -> Dict
         }
 
     # ==================== MAIN ANALYZE METHOD ====================
-    async def analyze(self, symbol: str, timeframe: str, candles: List[Dict],
+async def analyze(self, symbol: str, timeframe: str, candles: List[Dict],
                       multi_timeframe_data: Dict[str, List[Dict]],
                       funding_data: List[Dict], oi_data: List[Dict],
                       ls_ratio_data: List[Dict], stats_24h: Dict) -> Dict[str, Any]:
