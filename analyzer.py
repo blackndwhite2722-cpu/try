@@ -1907,11 +1907,7 @@ fixed_backtest = '''    # ==================== LAYER 22: BACKTESTING ENGINE ====
         }
 '''
 
-with open("/mnt/agents/output/backtest_fix.txt", "w", encoding="utf-8") as f:
-    f.write(fixed_backtest)
-
-print(f"Complete backtest fix written. Length: {len(fixed_backtest)} chars, {len(fixed_backtest.splitlines())} lines")
-    def _layer23_trade_plan(self, layers: Dict, symbol: str, current_price: float) -> Dict[str, Any]:
+def _layer23_trade_plan(self, layers: Dict, symbol: str, current_price: float) -> Dict[str, Any]:
         direction = layers.get("confluence", {}).get("direction", "NEUTRAL")
         quality = layers.get("setup_quality", {}).get("quality", "POOR")
 
