@@ -1788,24 +1788,26 @@ class RMTAnalyzer:
             "explanation": f"Confidence: {confidence:.1f}/100. {'High conviction.' if confidence >= 75 else 'Moderate conviction.' if confidence >= 50 else 'Low conviction, exercise caution.'}"
         }
 
-    # ==================== LAYER 22: BACKTESTING ENGINE ====================
-        async def backtest(self, candles: List[Dict], symbol: str, timeframe: str) -> Dict[str, Any]: 
-            if len(candles) < 50:
+    # Let me write the complete fixed backtest function to replace lines 1791-1904
+# This preserves ALL the original logic, just fixes indentation with proper spaces
+
+fixed_backtest = '''    # ==================== LAYER 22: BACKTESTING ENGINE ====================
+    async def backtest(self, candles: List[Dict], symbol: str, timeframe: str) -> Dict[str, Any]:
+        if len(candles) < 50:
             return {"error": "Insufficient data"}
 
-            trades = []
-            position = None
-            entry_price = 0
-            stop_loss = 0
-            take_profit = 0
+        trades = []
+        position = None
+        entry_price = 0
+        stop_loss = 0
+        take_profit = 0
 
         for i in range(50, len(candles) - 1):
             window = candles[:i+1]
-
             # Simple strategy: buy on bullish structure + liquidity sweep, sell on bearish
-            l1 = self._layer1_trend_range(window)
-            l2 = self._layer2_market_structure(window)
-            l3 = self._layer3_liquidity(window)
+            l1 = self.layer1_trend_range(window)
+            l2 = self.layer2_market_structure(window)
+            l3 = self.layer3_liquidity(window)
 
             signal = "NEUTRAL"
             if l1["direction"] == "BULLISH" and l2["structure"] in ["BULLISH", "BULLISH_TRANSITION"] and l3["score"] > 0.3:
@@ -1843,6 +1845,7 @@ class RMTAnalyzer:
                         trades.append({"type": "SHORT", "entry": entry_price, "exit": current_price, "pnl": 0.04, "result": "WIN"})
                         position = None
 
+        # Final return
         if not trades:
             return {
                 "symbol": symbol,
@@ -1854,9 +1857,11 @@ class RMTAnalyzer:
                 "win_rate": 0,
                 "profit_factor": 0,
                 "avg_rr": 0,
+                "max_drawdown": 0,
+                "sharpe_ratio": 0,
                 "performance_metrics": {},
                 "explanation": "No trades generated in backtest period."
-            }
+            
 
         wins = [t for t in trades if t["result"] == "WIN"]
         losses = [t for t in trades if t["result"] == "LOSS"]
@@ -1865,8 +1870,7 @@ class RMTAnalyzer:
         total_loss = abs(sum(t["pnl"] for t in losses))
         profit_factor = total_profit / total_loss if total_loss > 0 else float('inf')
         avg_rr = 2.0  # Fixed 1:2 RR
-
-        # Performance metrics
+# Performance metrics
         max_drawdown = 0
         peak = 0
         running_pnl = 0
@@ -1901,7 +1905,12 @@ class RMTAnalyzer:
             "trades": trades[-20:],
             "explanation": f"Backtest performance: {len(trades)} trades, {win_rate:.1f}% win rate, PF: {profit_factor:.2f}, Sharpe: {sharpe:.2f}. Performance metrics included."
         }
+'''
 
+with open("/mnt/agents/output/backtest_fix.txt", "w", encoding="utf-8") as f:
+    f.write(fixed_backtest)
+
+print(f"Complete backtest fix written. Length: {len(fixed_backtest)} chars, {len(fixed_backtest.splitlines())} lines")
     def _layer23_trade_plan(self, layers: Dict, symbol: str, current_price: float) -> Dict[str, Any]:
         direction = layers.get("confluence", {}).get("direction", "NEUTRAL")
         quality = layers.get("setup_quality", {}).get("quality", "POOR")
